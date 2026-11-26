@@ -1,0 +1,25 @@
+fitpoint/
+├── index.html                       index    Funil 1 · entrada
+├── conceito.html                    index    Funil 1 · como funciona
+├── faq.html                         index    Funil 1 · 10 dúvidas
+├── simulador.html                   index    Funil 1 · cálculo aberto
+├── pre-cadastro.html                noindex  Funil 1 · conversão
+├── detalhes-operacionais.html       noindex  Funil 2 · aprofundamento
+├── politica-de-privacidade.html     index    LGPD
+├── sitemap.xml                      4 URLs indexáveis
+├── robots.txt                       inerte em subpasta — ver 3.2
+├── README.md                        operação e pendências
+└── assets/
+    ├── css/fitpoint.css             folha única
+    ├── js/video-facade.js           vídeo + spotlight + revelação
+    ├── img/img1.webp                hero · 1200×1600
+    ├── img/img2.webp                conceito · 1200×1600
+    ├── img/img3.webp                simulador/faq · 1200×1200
+    ├── img4.webp                    pre-cadastro · 1200×1600
+    ├── img5.webp                    detalhes · 1200×1600
+    ├── img6.webp                    opcional · 1200×800
+    └── pdf/
+        ├── manual-normas-negocio-brasil-2026.pdf
+        ├── guia-rapido-abertura-evs-2026.pdf
+        ├── guia-produtos-2026.pdf
+        └── ganhos-tipicos-2024-brasil-ago-2025.pdf

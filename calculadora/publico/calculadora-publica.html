@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<title>Calculadora de margem e ponto de equilíbrio para operação de balcão</title>
+<meta name="description" content="Estime margem de contribuição, ponto de equilíbrio e recuperação do investimento em uma operação de balcão de bebidas e lanches proteicos. Cálculo aberto, com premissas informadas por você.">
+<style>
+  :root{ --marca:#0f766e; --cerda:#134e4a; --txt:#1f2937; --suave:#6b7280; --linha:#e5e7eb; }
+  *{box-sizing:border-box;}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#f7f8fa;margin:0;color:var(--txt);line-height:1.55;}
+  header{background:var(--marca);color:#fff;padding:26px 24px;}
+  .wrap{max-width:760px;margin:0 auto;}
+  header h1{margin:0;font-size:22px;line-height:1.3;}
+  header p{margin:8px 0 0;font-size:14px;opacity:.92;}
+  main{max-width:760px;margin:24px auto 72px;padding:0 16px;display:grid;gap:18px;}
+  section{background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.07);}
+  h2{font-size:16px;margin:0 0 6px;color:var(--cerda);}
+  .sub{font-size:13px;color:var(--suave);margin:0 0 16px;}
+  label{display:block;font-size:13px;margin-bottom:14px;color:#374151;}
+  input{width:100%;padding:9px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:15px;margin-top:4px;background:#fff;color:var(--txt);}
+  input:focus,button:focus{outline:2px solid var(--marca);outline-offset:2px;}
+  .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+  .kpi>div{background:#f0fdfa;border:1px solid #ccfbf1;border-radius:8px;padding:14px;}
+  .kpi span{display:block;font-size:12px;color:#475569;margin-bottom:4px;}
+  .kpi strong{font-size:19px;color:var(--cerda);font-variant-numeric:tabular-nums;}
+  .nota{font-size:12px;color:var(--suave);margin:14px 0 0;padding-top:14px;border-top:1px solid var(--linha);line-height:1.65;}
+  .erro{border-left:3px solid #b91c1c;background:#fef2f2;padding:10px 12px;font-size:13px;border-radius:4px;margin-top:12px;}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Margem e ponto de equilíbrio de uma operação de balcão</h1>
+    <p>O cálculo usa apenas os números que você informar. Não há preço de fornecedor nesta página.</p>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2>1. Custo e preço</h2>
+    <p class="sub">Informe o custo dos insumos por porção que você pratica.</p>
+    <label>Custo dos insumos por porção (R$)
+      <input type="number" id="custo" value="12.00" step="0.01" min="0">
+    </label>
+    <label>Preço de venda por porção (R$)
+      <input type="number" id="venda" value="45.00" step="0.01" min="0">
+    </label>
+    <label>Custo fixo mensal do espaço (R$)
+      <input type="number" id="fixo" value="0" step="0.01" min="0">
+    </label>
+  </section>
+
+  <section>
+    <h2>2. Demanda estimada</h2>
+    <p class="sub">Números do seu ponto de venda, não projeção de mercado.</p>
+    <label>Pessoas circulando por mês
+      <input type="number" id="publico" value="1000" min="0">
+    </label>
+    <label>Percentual que consome (%)
+      <input type="number" id="adesao" value="5" step="0.1" min="0" max="100">
+    </label>
+    <label>Porções por consumidor ao mês
+      <input type="number" id="freq" value="8" step="0.5" min="0">
+    </label>
+  </section>
+
+  <section>
+    <h2>3. Investimento</h2>
+    <label>Equipamentos e mobiliário (R$)
+      <input type="number" id="imob" value="6500" step="0.01" min="0">
+    </label>
+    <label>Estoque inicial (R$)
+      <input type="number" id="estoque" value="0" step="0.01" min="0">
+    </label>
+  </section>
+
+  <section>
+    <h2>4. Resultado do cálculo</h2>
+    <div class="kpi" aria-live="polite">
+      <div><span>CMV sobre o preço de venda</span><strong id="cmv">—</strong></div>
+      <div><span>Margem de contribuição por porção</span><strong id="margem">—</strong></div>
+      <div><span>Porções para cobrir o custo fixo</span><strong id="pe">—</strong></div>
+      <div><span>Margem de contribuição mensal</span><strong id="margemMes">—</strong></div>
+      <div><span>Resultado após custo fixo</span><strong id="resultado">—</strong></div>
+      <div><span>Recuperação do investimento</span><strong id="payback">—</strong></div>
+    </div>
+    <div id="aviso"></div>
+    <p class="nota">
+      Margem de contribuição é o preço de venda menos o custo dos insumos. Não é lucro: não deduz aluguel, energia, água, mão de obra, impostos, taxas de cartão, descartáveis nem perdas.<br>
+      Ponto de equilíbrio = custo fixo mensal ÷ margem de contribuição por porção.<br>
+      Recuperação = (equipamentos + estoque inicial) ÷ margem de contribuição mensal.<br>
+      Não há garantia de resultado. Os números dependem das premissas que você informou, do fluxo real do ponto, da gestão e das condições de mercado.
+    </p>
+  </section>
+</main>
+
+<script>
+"use strict";
+const fmt = v => v.toLocaleString("pt-BR", {style:"currency", currency:"BRL"});
+const fmtN = (v,d=0) => v.toLocaleString("pt-BR", {minimumFractionDigits:d, maximumFractionDigits:d});
+const $ = id => document.getElementById(id);
+
+function calc(){
+  const custo = +$("custo").value || 0;
+  const venda = +$("venda").value || 0;
+  const fixo  = +$("fixo").value  || 0;
+  const publico = +$("publico").value || 0;
+  const adesao  = (+$("adesao").value || 0)/100;
+  const freq    = +$("freq").value || 0;
+  const imob    = +$("imob").value || 0;
+  const estoque = +$("estoque").value || 0;
+
+  const margem = venda - custo;
+  const cmv    = venda > 0 ? (custo/venda)*100 : NaN;
+  const pe     = (fixo > 0 && margem > 0) ? fixo/margem : NaN;
+  const porcMes = publico * adesao * freq;
+  const margemMes = porcMes * margem;
+  const resultado = margemMes - fixo;
+  const inv = imob + estoque;
+  const payback = margemMes > 0 ? inv/margemMes : NaN;
+
+  $("cmv").textContent       = Number.isFinite(cmv) ? fmtN(cmv,1)+"%" : "—";
+  $("margem").textContent    = fmt(margem);
+  $("pe").textContent        = Number.isFinite(pe) ? fmtN(Math.ceil(pe))+" porções" : "—";
+  $("margemMes").textContent = fmt(margemMes);
+  $("resultado").textContent = fmt(resultado);
+  $("payback").textContent   = Number.isFinite(payback) ? fmtN(payback,1)+" meses" : "—";
+
+  let a = "";
+  if(margem <= 0) a += `<div class="erro"><strong>Margem não positiva.</strong> O preço de venda não cobre o custo dos insumos.</div>`;
+  if(cmv >= 40)   a += `<div class="erro"><strong>CMV de ${fmtN(cmv,1)}%.</strong> O custo consome parcela alta da receita.</div>`;
+  if(fixo === 0)  a += `<div class="erro">Custo fixo zerado: o ponto de equilíbrio não é calculado.</div>`;
+  $("aviso").innerHTML = a;
+}
+
+["custo","venda","fixo","publico","adesao","freq","imob","estoque"].forEach(id => {
+  $(id).addEventListener("input", calc);
+});
+calc();
+</script>
+</body>
+</html>

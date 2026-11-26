@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de margem e ponto de equilíbrio</title>
+<meta name="description" content="Calcule margem de contribuição, ponto de equilíbrio e recuperação do investimento usando os seus próprios números.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0F172A">
+<link rel="canonical" href="https://edusidegum.com.br/fitpoint/simulador.html">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Fit Point">
+<meta property="og:title" content="Simulador de margem e ponto de equilíbrio">
+<meta property="og:description" content="Cálculo aberto com os seus números. Sem preço de fornecedor na página.">
+<meta property="og:url" content="https://edusidegum.com.br/fitpoint/simulador.html">
+<meta property="og:image" content="https://edusidegum.com.br/fitpoint/assets/img/img3.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/css/fitpoint.css">
+<script>document.documentElement.classList.add("js");</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://edusidegum.com.br/fitpoint/simulador.html#pagina",
+      "url": "https://edusidegum.com.br/fitpoint/simulador.html",
+      "name": "Simulador de margem e ponto de equilíbrio",
+      "inLanguage": "pt-BR",
+      "isPartOf": { "@id": "https://edusidegum.com.br/fitpoint/#site" },
+      "author": { "@id": "https://edusidegum.com.br/fitpoint/#autor" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://edusidegum.com.br/fitpoint/simulador.html#trilha",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Início", "item": "https://edusidegum.com.br/fitpoint/" },
+        { "@type": "ListItem", "position": 2, "name": "Simulador", "item": "https://edusidegum.com.br/fitpoint/simulador.html" }
+      ]
+    }
+  ]
+}
+</script>
+</head>
+<body class="faixa-escura">
+<!-- Página do Distribuidor Independente Herbalife. Site independente, não oficial. -->
+
+<a class="pular-link" href="#conteudo">Ir para o conteúdo</a>
+
+<div class="identificacao">
+  <div class="container">
+    <strong>Distribuidor Independente Herbalife</strong> — Edu Sidegum, Novo Hamburgo/RS. Este não é o site oficial da Herbalife.
+  </div>
+</div>
+
+<header class="topo">
+  <div class="container topo-barra">
+    <a class="topo-marca" href="index.html">
+      Fit Point
+      <span>Nutrição funcional em academias</span>
+    </a>
+    <nav class="topo-nav" aria-label="Navegação principal">
+      <a href="index.html">Início</a>
+      <a href="conceito.html">Como funciona</a>
+      <a href="faq.html">Dúvidas</a>
+      <a href="simulador.html" aria-current="page">Simulador</a>
+    </nav>
+    <a class="botao botao-principal" href="https://wa.me/5551999663200">Falar com consultor</a>
+  </div>
+</header>
+
+<main id="conteudo">
+
+  <section class="hero faixa-escura">
+    <div class="container">
+      <p class="selo">Cálculo aberto</p>
+      <h1>Simule com os seus números, não com os nossos.</h1>
+      <p>Esta página não traz preço de fornecedor. Você informa o custo dos insumos e o preço de venda que pratica, e o cálculo devolve margem, ponto de equilíbrio e prazo de recuperação. Fórmula visível em cada etapa.</p>
+    </div>
+  </section>
+
+  <section class="secao faixa-escura">
+    <div class="container">
+      <div class="simulador-grade">
+
+        <div class="painel painel-escuro">
+          <h2>Entradas</h2>
+
+          <label class="campo">
+            <span>Custo dos insumos por porção (R$)</span>
+            <input type="number" id="custo" value="12.00" step="0.01" min="0" inputmode="decimal">
+            <small class="campo-ajuda">Quanto você paga pelos ingredientes de uma porção servida.</small>
+          </label>
+
+          <label class="campo">
+            <span>Preço de venda por porção (R$)</span>
+            <input type="number" id="venda" value="45.00" step="0.01" min="0" inputmode="decimal">
+          </label>
+
+          <label class="campo">
+            <span>Custo fixo mensal do espaço (R$)</span>
+            <input type="number" id="fixo" value="0" step="0.01" min="0" inputmode="decimal">
+            <small class="campo-ajuda">Aluguel da área, energia, água. Deixe zero para calcular apenas a margem.</small>
+          </label>
+
+          <label class="campo">
+            <span>Pessoas circulando por mês</span>
+            <input type="number" id="publico" value="1000" min="0" inputmode="numeric">
+          </label>
+
+          <label class="campo">
+            <span>Percentual que consome (%)</span>
+            <input type="number" id="adesao" value="5" step="0.1" min="0" max="100" inputmode="decimal">
+          </label>
+
+          <label class="campo">
+            <span>Porções por consumidor ao mês</span>
+            <input type="number" id="freq" value="8" step="0.5" min="0" inputmode="decimal">
+          </label>
+
+          <label class="campo">
+            <span>Equipamentos e mobiliário (R$)</span>
+            <input type="number" id="imob" value="6500" step="0.01" min="0" inputmode="decimal">
+          </label>
+
+          <label class="campo">
+            <span>Estoque inicial (R$)</span>
+            <input type="number" id="estoque" value="0" step="0.01" min="0" inputmode="decimal">
+          </label>
+        </div>
+
+        <div class="painel painel-escuro">
+          <h2>Resultado</h2>
+          <div class="resultado" aria-live="polite">
+            <div><span>CMV sobre o preço</span><strong id="cmv">—</strong></div>
+            <div><span>Margem por porção</span><strong id="margem">—</strong></div>
+            <div><span>Porções para cobrir o fixo</span><strong id="pe">—</strong></div>
+            <div><span>Margem mensal</span><strong id="margemMes">—</strong></div>
+            <div><span>Resultado após o fixo</span><strong id="resultadoMes">—</strong></div>
+            <div><span>Recuperação do investimento</span><strong id="payback">—</strong></div>
+          </div>
+
+          <div id="avisos"></div>
+
+          <div class="salvaguarda" style="margin-top:20px;background:rgba(255,255,255,.05);border-color:var(--linha-escura);color:#CBD5E1">
+            <p><strong>Como o cálculo é feito.</strong> Margem = preço de venda − custo dos insumos. Ponto de equilíbrio = custo fixo mensal ÷ margem. Recuperação = (equipamentos + estoque) ÷ margem mensal.</p>
+            <p>Margem de contribuição não é lucro. Não estão deduzidos impostos, taxas de cartão, descartáveis, perdas, cortesias nem mão de obra. O custo do produto não entra no investimento porque já é deduzido em cada venda.</p>
+            <p>Não há garantia de ganhos. Os números refletem apenas as premissas que você informou. Resultados dependem de fluxo real, gestão e condições de mercado.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao-clara">
+    <div class="container">
+      <h2>O que este simulador não faz</h2>
+      <p class="secao-intro">Delimitar o escopo evita decisão sobre número errado.</p>
+      <ul class="lista-criterios">
+        <li>Não estima demanda real. O percentual de adesão é premissa sua, não projeção de mercado.</li>
+        <li>Não calcula tributos, taxas de cartão, perdas por validade nem custo de pessoal.</li>
+        <li>Não incorpora sazonalidade, concorrência local nem mudança de preço de insumo.</li>
+        <li>Não substitui avaliação contábil. Leve os números ao seu contador antes de decidir.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta faixa-escura">
+    <div class="container">
+      <h2>Quer revisar esses números com alguém</h2>
+      <p>Vinte minutos de conversa, com as suas premissas na tela. Sem compromisso de adesão.</p>
+      <a class="botao botao-principal" href="https://wa.me/5551999663200">Agendar minha chamada</a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <div class="container">
+    <div class="rodape-grade">
+      <div>
+        <h2>Fit Point</h2>
+        <p>Operação de nutrição funcional em academias e estúdios, conduzida por Distribuidor Independente Herbalife.</p>
+        <p>Eduardo Sidegum — Distribuidor Independente Herbalife<br>Rua Salgado Filho, 15 — Pátria Nova<br>Novo Hamburgo/RS — CEP 95320-070</p>
+      </div>
+      <div>
+        <h2>Páginas</h2>
+        <ul class="rodape-lista">
+          <li><a href="index.html">Início</a></li>
+          <li><a href="conceito.html">Como funciona</a></li>
+          <li><a href="faq.html">Dúvidas frequentes</a></li>
+          <li><a href="pre-cadastro.html">Falar com consultor</a></li>
+          <li><a href="politica-de-privacidade.html">Privacidade</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Contato</h2>
+        <ul class="rodape-lista">
+          <li><a href="https://wa.me/5551999663200" rel="noopener">WhatsApp</a></li>
+          <li><a href="mailto:edusidegum@gmail.com">edusidegum@gmail.com</a></li>
+          <li><a href="https://www.instagram.com/eduardo_sidegum/" rel="noopener me">Instagram</a></li>
+          <li><a href="https://www.facebook.com/consultorhlfbrasil" rel="noopener me">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="rodape-legal">
+      <p>Este é um site independente, mantido por Distribuidor Independente Herbalife. Não é o site oficial da Herbalife.</p>
+      <p>Não há garantia de ganhos. Consulte as Informações Importantes sobre Ser um Distribuidor.</p>
+      <p>Os produtos não são medicamentos e não têm o objetivo de diagnosticar, tratar, curar ou prevenir doenças.</p>
+    </div>
+  </div>
+</footer>
+
+<a class="zap" href="https://wa.me/5551999663200" aria-label="Falar com o consultor pelo WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24s8.24 3.7 8.24 8.24-3.7 8.24-8.24 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.44.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.44-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.87.85-.87 2.07s.89 2.4 1.02 2.57c.12.17 1.75 2.67 4.24 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg>
+  WhatsApp
+</a>
+
+<script src="assets/js/video-facade.js" defer></script>
+<script>
+(function () {
+  "use strict";
+  var campos = ["custo","venda","fixo","publico","adesao","freq","imob","estoque"];
+  var el = {};
+  campos.forEach(function (id) { el[id] = document.getElementById(id); });
+
+  var fmt = function (v) {
+    return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  };
+  var fmtN = function (v, d) {
+    return v.toLocaleString("pt-BR", { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
+  };
+
+  function ler(id) { return parseFloat(el[id].value) || 0; }
+
+  function calcular() {
+    var custo = ler("custo"), venda = ler("venda"), fixo = ler("fixo");
+    var publico = ler("publico"), adesao = ler("adesao") / 100, freq = ler("freq");
+    var imob = ler("imob"), estoque = ler("estoque");
+
+    var margem = venda - custo;
+    var cmv = venda > 0 ? (custo / venda) * 100 : NaN;
+    var pe = (fixo > 0 && margem > 0) ? fixo / margem : NaN;
+    var porcMes = publico * adesao * freq;
+    var margemMes = porcMes * margem;
+    var resultadoMes = margemMes - fixo;
+    var investimento = imob + estoque;
+    var payback = margemMes > 0 ? investimento / margemMes : NaN;
+
+    document.getElementById("cmv").textContent = isFinite(cmv) ? fmtN(cmv, 1) + "%" : "—";
+    document.getElementById("margem").textContent = fmt(margem);
+    document.getElementById("pe").textContent = isFinite(pe) ? fmtN(Math.ceil(pe), 0) + " porções" : "—";
+    document.getElementById("margemMes").textContent = fmt(margemMes);
+    document.getElementById("resultadoMes").textContent = fmt(resultadoMes);
+    document.getElementById("payback").textContent = isFinite(payback) ? fmtN(payback, 1) + " meses" : "—";
+
+    var avisos = "";
+    if (margem <= 0) {
+      avisos += '<div class="alerta" style="border-left-color:#F59E0B;background:rgba(245,158,11,.12);color:#FDE68A"><strong>Margem não positiva.</strong> O preço de venda não cobre o custo dos insumos.</div>';
+    }
+    if (isFinite(cmv) && cmv >= 40) {
+      avisos += '<div class="alerta" style="border-left-color:#F59E0B;background:rgba(245,158,11,.12);color:#FDE68A"><strong>CMV de ' + fmtN(cmv, 1) + '%.</strong> O custo consome parcela alta da receita.</div>';
+    }
+    if (fixo === 0) {
+      avisos += '<div class="alerta" style="border-left-color:#64748B;background:rgba(148,163,184,.12);color:#CBD5E1">Custo fixo zerado: o ponto de equilíbrio não é calculado.</div>';
+    }
+    if (investimento === 0) {
+      avisos += '<div class="alerta" style="border-left-color:#64748B;background:rgba(148,163,184,.12);color:#CBD5E1">Investimento zerado: a recuperação não é calculada.</div>';
+    }
+    document.getElementById("avisos").innerHTML = avisos;
+  }
+
+  campos.forEach(function (id) {
+    el[id].addEventListener("input", calcular);
+    el[id].addEventListener("change", calcular);
+  });
+
+  calcular();
+})();
+</script>
+<script src="../bloco-incluir.js" defer data-politica="politica-de-privacidade.html"></script>
+</body>
+</html>

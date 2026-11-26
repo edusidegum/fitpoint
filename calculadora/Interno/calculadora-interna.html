@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Calculadora de custo e margem — uso interno</title>
+<style>
+  :root{ --marca:#0f766e; --cerda:#134e4a; --txt:#1f2937; --suave:#6b7280; --linha:#e5e7eb; }
+  *{box-sizing:border-box;}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#f4f6f8;margin:0;color:var(--txt);}
+  header{background:var(--marca);color:#fff;padding:20px 28px;}
+  header h1{margin:0;font-size:21px;}
+  header p{margin:6px 0 0;font-size:13px;opacity:.9;}
+  main{max-width:1120px;margin:24px auto 64px;padding:0 16px;display:grid;gap:20px;grid-template-columns:1fr 1fr;}
+  @media(max-width:860px){main{grid-template-columns:1fr;}}
+  section{background:#fff;border-radius:10px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08);}
+  section.full{grid-column:1/-1;}
+  h2{font-size:15px;margin:0 0 16px;color:var(--cerda);letter-spacing:.2px;}
+  label{display:block;font-size:13px;margin-bottom:12px;color:#374151;}
+  input,select{width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:14px;margin-top:4px;background:#fff;color:var(--txt);}
+  input:focus,select:focus,button:focus{outline:2px solid var(--marca);outline-offset:2px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  caption{text-align:left;font-size:12px;color:var(--suave);padding-bottom:8px;}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--linha);}
+  th{font-size:11px;color:var(--suave);text-transform:uppercase;letter-spacing:.4px;}
+  .num{text-align:right;font-variant-numeric:tabular-nums;}
+  .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+  .kpi>div{background:#f0fdfa;border:1px solid #ccfbf1;border-radius:8px;padding:14px;}
+  .kpi span{display:block;font-size:12px;color:#475569;margin-bottom:4px;}
+  .kpi strong{font-size:19px;color:var(--cerda);}
+  .nota{font-size:12px;color:var(--suave);margin:12px 0 0;line-height:1.6;}
+  .erro{border-left:3px solid #b91c1c;background:#fef2f2;padding:10px 12px;font-size:13px;border-radius:4px;margin-top:12px;}
+  .linha-receita{display:grid;grid-template-columns:1fr 100px 36px;gap:8px;align-items:end;margin-bottom:8px;}
+  button{border:1px solid #d1d5db;background:#fff;border-radius:6px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--txt);}
+  button:hover{background:#f9fafb;}
+  .btn-rem{background:#fff;color:#b91c1c;border-color:#fecaca;padding:8px 0;}
+</style>
+</head>
+<body>
+<header>
+  <h1>Calculadora de custo, margem e equilíbrio</h1>
+  <p>Ambiente interno do Distribuidor Independente Herbalife. Base de preços: Tabela HLF Supervisor 2026, consultada em 17/11/2026.</p>
+</header>
+
+<main>
+  <section>
+    <h2>1. Nível de compra</h2>
+    <label>Faixa de desconto
+      <select id="nivel">
+        <option value="25">25%</option>
+        <option value="35">35%</option>
+        <option value="42">42%</option>
+        <option value="50" selected>50%</option>
+      </select>
+    </label>
+    <p class="nota">Esta página não pode ser publicada em hospedagem aberta. O conteúdo de preços exige controle de acesso, conforme item 3.5 das Normas de Negócio.</p>
+  </section>
+
+  <section>
+    <h2>2. Parâmetros comerciais</h2>
+    <label>Preço de venda por porção (R$)
+      <input type="number" id="venda" value="45" step="0.01" min="0">
+    </label>
+    <label>Custo fixo mensal do espaço (R$)
+      <input type="number" id="fixo" value="0" step="0.01" min="0">
+    </label>
+  </section>
+
+  <section class="full">
+    <h2>3. Composição da receita</h2>
+    <div id="receita"></div>
+    <button type="button" id="add">Adicionar ingrediente</button>
+    <p class="nota">Gramaturas conferidas contra o Guia de Produtos 2025. NutreV: 672 g por unidade (21 porções de 32 g conforme rótulo) e 6.720 g na caixa de 10 unidades.</p>
+  </section>
+
+  <section class="full">
+    <h2>4. Custo da receita</h2>
+    <table>
+      <caption>Custo por porção calculado sobre o preço da faixa selecionada.</caption>
+      <thead><tr>
+        <th scope="col">Ingrediente</th>
+        <th scope="col" class="num">Usado (g)</th>
+        <th scope="col" class="num">Embalagem</th>
+        <th scope="col" class="num">Preço na faixa</th>
+        <th scope="col" class="num">R$/g</th>
+        <th scope="col" class="num">Custo</th>
+      </tr></thead>
+      <tbody id="corpo"></tbody>
+      <tfoot><tr>
+        <th scope="row" colspan="5">Custo total por porção</th>
+        <td class="num" id="custoTotal"></td>
+      </tr></tfoot>
+    </table>
+  </section>
+
+  <section class="full">
+    <h2>5. Indicadores</h2>
+    <div class="kpi" aria-live="polite">
+      <div><span>CMV sobre o preço de venda</span><strong id="cmv">—</strong></div>
+      <div><span>Margem de contribuição por porção</span><strong id="margem">—</strong></div>
+      <div><span>Ponto de equilíbrio (porções/mês)</span><strong id="pe">—</strong></div>
+      <div><span>Margem de contribuição mensal</span><strong id="margemMes">—</strong></div>
+      <div><span>Resultado após custo fixo</span><strong id="resultado">—</strong></div>
+    </div>
+    <p class="nota">Ponto de equilíbrio operacional = custo fixo mensal ÷ margem de contribuição por porção. Não inclui tributos sobre a operação, perdas, cortesias, descartáveis nem mão de obra.</p>
+    <div id="aviso"></div>
+  </section>
+
+  <section class="full">
+    <h2>6. Investimento e recuperação</h2>
+    <label>Investimento em equipamentos e mobiliário (R$)
+      <input type="number" id="imob" value="6500" step="0.01" min="0">
+    </label>
+    <label>Estoque inicial (R$)
+      <input type="number" id="estoque" value="0" step="0.01" min="0">
+    </label>
+    <label>Alunos na academia
+      <input type="number" id="alunos" value="1000" min="0">
+    </label>
+    <label>Percentual que consome (%)
+      <input type="number" id="adesao" value="5" step="0.1" min="0" max="100">
+    </label>
+    <label>Porções por consumidor ao mês
+      <input type="number" id="freq" value="8" step="0.5" min="0">
+    </label>
+    <div class="kpi" aria-live="polite" style="margin-top:8px">
+      <div><span>Consumidores estimados</span><strong id="usuarios">—</strong></div>
+      <div><span>Porções por mês</span><strong id="porcMes">—</strong></div>
+      <div><span>Recuperação do investimento</span><strong id="payback">—</strong></div>
+    </div>
+    <p class="nota">Recuperação = (equipamentos + estoque inicial) ÷ margem de contribuição mensal. O custo do produto não é somado ao investimento: ele já é deduzido em cada venda. Premissas informadas pelo operador, não projeção de resultado.</p>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+const fmt = v => v.toLocaleString("pt-BR", {style:"currency", currency:"BRL"});
+const fmtN = (v,d=0) => v.toLocaleString("pt-BR", {minimumFractionDigits:d, maximumFractionDigits:d});
+
+/* Base de preços — Tabela HLF Supervisor 2026 (edusidegum.com.br/menu/tabelas/tabelahlfsupervisor2026.html),
+   consultada em 17/11/2026. Gramaturas conforme Guia de Produtos Herbalife 2025.
+   g = gramas ou mililitros por embalagem. Somente produtos com gramatura confirmada. */
+const PRODUTOS = [
+  {id:"shake550",   nome:"Shake 550 g",                              g:550,  p:{25:183.04,35:162.43,42:148.00,50:131.51}},
+  {id:"shake1976",  nome:"Shake 1.976 g — Chocolate Sensation 387K", g:1976, p:{25:590.35,35:523.88,42:477.34,50:424.16}},
+  {id:"shake2080",  nome:"Shake 2.080 g — Baunilha / Doce de Leite / Morango", g:2080, p:{25:621.21,35:551.26,42:502.29,50:446.33}},
+  {id:"sache",      nome:"Shake Sachê 26 g — 0948",                  g:26,   p:{25:65.37,35:58.93,42:54.42,50:49.26}},
+  {id:"nutrisoup",  nome:"Nutri Soup 416 g — 395K",                   g:416,  p:{25:183.04,35:162.43,42:148.00,50:131.51}},
+  {id:"onactive",   nome:"OnActive 264 g — 223K",                     g:264,  p:{25:135.00,35:121.88,42:112.70,50:102.21}},
+  {id:"beauty",     nome:"Beauty Booster 240 g — 1923",               g:240,  p:{25:228.23,35:202.53,42:184.54,50:163.98}},
+  {id:"hc51",       nome:"Herbal Concentrate 51 g",                   g:51,   p:{25:163.91,35:145.45,42:132.53,50:117.77}},
+  {id:"hc102",      nome:"Herbal Concentrate 102 g",                  g:102,  p:{25:271.53,35:240.95,42:219.55,50:195.09}},
+  {id:"hc357",      nome:"Herbal Concentrate 357 g — 004K",           g:357,  p:{25:847.90,35:752.42,42:685.58,50:609.20}},
+  {id:"liftoff",    nome:"Liftoff 75 g — 15 sachês",                  g:75,   p:{25:149.11,35:134.61,42:124.46,50:112.86}},
+  {id:"nrg60",      nome:"N-R-G 60 g — 058K",                         g:60,   p:{25:118.94,35:105.55,42:96.17,50:85.46}},
+  {id:"nrg100",     nome:"N-R-G 100 g",                               g:100,  p:{25:179.36,35:159.16,42:145.03,50:128.87}},
+  {id:"nrg330",     nome:"N-R-G 330 g — 003K",                        g:330,  p:{25:527.87,35:468.43,42:426.82,50:379.27}},
+  {id:"fiberpowder",nome:"Fiber Powder 275 g — 0927",                 g:275,  p:{25:183.73,35:163.04,42:148.56,50:132.01}},
+  {id:"fiberconc",  nome:"Fiber Concentrate 450 ml",                  g:450,  p:{25:144.14,35:127.91,42:116.55,50:103.56}},
+  {id:"barras",     nome:"Barras de Proteína 245 g",                  g:245,  p:{25:91.25,35:85.17,42:80.92,50:76.05}},
+  {id:"sopas",      nome:"Sopas Instantâneas 196 g",                  g:196,  p:{25:65.05,35:59.51,42:55.63,50:51.20}},
+  {id:"nutrev",     nome:"NutreV unidade 672 g — 1639",               g:672,  p:{25:66.03,35:62.02,42:59.21,50:56.01}},
+  {id:"nutrev10",   nome:"NutreV 10 unidades 6.720 g — 306B",         g:6720, p:{25:533.22,35:503.30,42:482.35,50:458.42}},
+  {id:"prot240",    nome:"Proteína em pó 240 g — 0242",               g:240,  p:{25:162.63,35:144.32,42:131.50,50:116.86}},
+  {id:"prot480",    nome:"Proteína em pó 480 g — 0246",               g:480,  p:{25:300.73,35:266.87,42:243.16,50:216.07}},
+  {id:"sorvete",    nome:"Preparo de sorvete 1.040 g",                g:1040, p:{25:364.55,35:323.50,42:294.76,50:261.92}},
+  {id:"crunch",     nome:"Protein Crunch 150 g — 040K",               g:150,  p:{25:86.51,35:76.77,42:69.96,50:62.16}},
+  {id:"whey",       nome:"Whey Protein 3W 510 g",                     g:510,  p:{25:192.54,35:176.12,42:164.62,50:151.48}},
+  {id:"creatina",   nome:"Creatina 150 g — 325K",                     g:150,  p:{25:135.37,35:121.93,42:112.52,50:101.76}},
+  {id:"glutamina",  nome:"Glutamina 150 g — 146K",                    g:150,  p:{25:59.41,35:54.17,42:50.50,50:46.31}},
+  {id:"bcaa",       nome:"BCAA 5:1:1 204 g — 148K",                   g:204,  p:{25:199.17,35:181.80,42:169.64,50:155.74}}
+];
+
+let receita = [
+  {prod:"shake2080", g:41.6},
+  {prod:"nutrev",    g:38.4}
+];
+
+const $ = id => document.getElementById(id);
+const elReceita = $("receita");
+
+function opcoes(sel){
+  return PRODUTOS.map(p => `<option value="${p.id}"${p.id===sel?" selected":""}>${p.nome}</option>`).join("");
+}
+
+function desenharReceita(){
+  elReceita.innerHTML = receita.map((r,i) => `
+    <div class="linha-receita">
+      <label style="margin:0">Ingrediente
+        <select data-i="${i}" class="sel-prod">${opcoes(r.prod)}</select>
+      </label>
+      <label style="margin:0">Gramas
+        <input type="number" data-i="${i}" class="inp-g" value="${r.g}" step="0.1" min="0">
+      </label>
+      <button type="button" class="btn-rem" data-rem="${i}" aria-label="Remover ingrediente ${i+1}">×</button>
+    </div>`).join("");
+
+  elReceita.querySelectorAll(".sel-prod").forEach(el => {
+    el.addEventListener("change", e => { receita[+e.target.dataset.i].prod = e.target.value; calc(); });
+  });
+  elReceita.querySelectorAll(".inp-g").forEach(el => {
+    el.addEventListener("input", e => { receita[+e.target.dataset.i].g = +e.target.value || 0; calc(); });
+  });
+  elReceita.querySelectorAll(".btn-rem").forEach(el => {
+    el.addEventListener("click", e => {
+      if(receita.length <= 1) return;
+      receita.splice(+e.currentTarget.dataset.rem, 1);
+      desenharReceita(); calc();
+    });
+  });
+}
+
+$("add").addEventListener("click", () => {
+  receita.push({prod:"nutrev", g:32});
+  desenharReceita(); calc();
+});
+
+function calc(){
+  const nivel = $("nivel").value;
+  const venda = +$("venda").value || 0;
+  const fixo  = +$("fixo").value  || 0;
+
+  let custo = 0, linhas = "";
+  for(const r of receita){
+    const p = PRODUTOS.find(x => x.id === r.prod);
+    if(!p || !p.g) continue;
+    const preco = p.p[nivel];
+    const porG  = preco / p.g;
+    const cp    = porG * r.g;
+    custo += cp;
+    linhas += `<tr>
+      <td>${p.nome}</td>
+      <td class="num">${fmtN(r.g,1)}</td>
+      <td class="num">${fmtN(p.g)} g</td>
+      <td class="num">${fmt(preco)}</td>
+      <td class="num">${porG.toFixed(4)}</td>
+      <td class="num">${fmt(cp)}</td>
+    </tr>`;
+  }
+  $("corpo").innerHTML = linhas || `<tr><td colspan="6">Sem ingredientes válidos.</td></tr>`;
+  $("custoTotal").textContent = fmt(custo);
+
+  const margem = venda - custo;
+  const cmv    = venda > 0 ? (custo / venda) * 100 : NaN;
+  const pe     = (fixo > 0 && margem > 0) ? fixo / margem : NaN;
+
+  const alunos  = +$("alunos").value  || 0;
+  const adesao  = (+$("adesao").value || 0) / 100;
+  const freq    = +$("freq").value    || 0;
+  const usuarios = alunos * adesao;
+  const porcMes  = usuarios * freq;
+  const margemMes = porcMes * margem;
+  const resultado = margemMes - fixo;
+
+  const imob    = +$("imob").value    || 0;
+  const estoque = +$("estoque").value || 0;
+  const inv     = imob + estoque;
+  const payback = margemMes > 0 ? inv / margemMes : NaN;
+
+  $("cmv").textContent       = Number.isFinite(cmv) ? fmtN(cmv,1)+"%" : "—";
+  $("margem").textContent    = fmt(margem);
+  $("pe").textContent        = Number.isFinite(pe) ? fmtN(Math.ceil(pe))+" porções" : "—";
+  $("margemMes").textContent = fmt(margemMes);
+  $("resultado").textContent = fmt(resultado);
+  $("usuarios").textContent  = fmtN(usuarios,1);
+  $("porcMes").textContent   = fmtN(porcMes,1);
+  $("payback").textContent   = Number.isFinite(payback)
+    ? fmtN(payback,1)+" meses" : "—";
+
+  let avisos = "";
+  if(margem <= 0) avisos += `<div class="erro"><strong>Margem não positiva.</strong> O preço de venda não cobre o custo dos insumos. Os indicadores de equilíbrio e recuperação ficam sem resultado.</div>`;
+  if(cmv >= 40) avisos += `<div class="erro"><strong>CMV elevado: ${fmtN(cmv,1)}%.</strong> Custo dos insumos consome parcela alta da receita. Revisar preço de venda ou gramatura da porção.</div>`;
+  if(fixo === 0) avisos += `<div class="erro">Custo fixo mensal zerado. O ponto de equilíbrio não será calculado.</div>`;
+  $("aviso").innerHTML = avisos;
+}
+
+["nivel","venda","fixo","imob","estoque","alunos","adesao","freq"].forEach(id => {
+  $(id).addEventListener("input", calc);
+  $(id).addEventListener("change", calc);
+});
+
+desenharReceita();
+calc();
+</script>
+</body>
+</html>
